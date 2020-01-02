@@ -1,6 +1,7 @@
 package guru.springframework.config;
 
 import guru.springframework.examplebeans.FakeDataSource;
+import guru.springframework.examplebeans.FakeJmsBroker;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,7 +15,7 @@ import org.springframework.core.env.Environment;
  * Created by jt on 6/7/17.
  */
 @Configuration
-@PropertySource("classpath:datasource.properties")
+@PropertySource({"classpath:datasource.properties", "classpath:jms.properties"})
 public class PropertyConfig {
 
 	@Autowired
@@ -28,6 +29,15 @@ public class PropertyConfig {
 
     @Value("${guru.dburl}")
     String url;
+    
+    @Value("${guru.jms.username}")
+    private String jmsUsername;
+    
+    @Value("${guru.jms.password}")
+    private String jmsPassword;
+    
+    @Value("${guru.jms.url}")
+    private String jmsUrl;
 
     @Bean
     public FakeDataSource fakeDataSource(){
@@ -36,6 +46,16 @@ public class PropertyConfig {
         fakeDataSource.setPassword(password);
         fakeDataSource.setUrl(url);
         return fakeDataSource;
+    }
+    
+    @Bean
+    public FakeJmsBroker fakeJmsBroker() {
+    	FakeJmsBroker fakeJmsBroker = new FakeJmsBroker();
+    	fakeJmsBroker.setPassword(jmsPassword);
+    	fakeJmsBroker.setUrl(jmsUrl);
+    	fakeJmsBroker.setUsername(jmsUsername);
+    	
+    	return fakeJmsBroker;
     }
 
     @Bean
